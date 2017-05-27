@@ -1,0 +1,20 @@
+{
+  "name": "tumblr-cli",
+  "version": "0.0.1",
+  "description": "CLI Tumblr client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isoden/tumblr-cli.git"
+  },
+  "keywords": [],
+  "author": "isoden <isoda@maboroshi.biz> (http://isoden.me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/isoden/tumblr-cli/issues"
+  },
+  "homepage": "https://github.com/isoden/tumblr-cli#readme",
+}
