@@ -12,6 +12,20 @@ const argv = minimist(process.argv.slice(2), {
 
 const client = Client.getClient()
 
+switch (argv._[0]) {
+  case 'register': {
+    client.register().subscribe(() => {
+      console.log('Successed!')
+      process.exit()
+    }, err => {
+      console.error(err)
+      process.exit(0)
+    })
+
+    break
+  }
+}
+
 if (argv.version) {
   console.log(client.version)
   process.exit()

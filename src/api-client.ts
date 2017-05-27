@@ -5,15 +5,9 @@
 import * as tumblr from 'tumblr.js'
 import { Observable } from 'rxjs/Rx'
 
-// tumblr.Client を継承して定義したいが tumblr.Client のクラスの実装方法がよろしくないのでプライベートフィールドから参照する。
-// tumblr.Client のインスタンスメソッドが prototype 上ではなく、クラスのプロパティとして宣言されているので、
-// const api = new class extends tumblr.ApiClient {
-//   blogInfo() {
-//     console.log('not executed...')
-//   }
-// }
-// api.blogInfo()
-// を実行するとプロパティのメソッドが参照されるので子クラスのメソッドが実行されない
+// tumblr.Client を継承して定義したいが、 tumblr.Client の実装方法がよろしくないのでプライベートフィールドから参照する方法にした。
+// tumblr.Client のインスタンスメソッドが prototype ではなく、 クラスのプロパティとして宣言されているので、
+// 子クラスで親クラスのメソッドをオーバーライドしたメソッドを定義して実行すると、 プロトタイプチェーンを見に行く前にプロパティのメソッドが参照されるので子クラスのメソッドが実行されない問題がある。
 export class ApiClient {
   private client: tumblr.Client
 
