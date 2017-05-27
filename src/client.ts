@@ -2,14 +2,22 @@
  * @file CLIクライアント
  */
 
+import * as fs from 'fs'
+import * as path from 'path'
 import * as tumblr from 'tumblr.js'
 import * as chalk from 'chalk'
 import * as inquirer from 'inquirer'
 import * as Preferences from 'preferences'
-import { isString, isObject } from 'lodash'
+import { isString, isObject, isNil } from 'lodash'
 import { Observable } from 'rxjs/Rx'
+import { ApiClient } from './api-client'
 
 const prefs = new Preferences<{ blogIdentifier: string; credentials: tumblr.Credentials }>('io.github.isoden/tumblr-cli')
+
+const api = new ApiClient(
+  prefs.blogIdentifier,
+  prefs.credentials,
+)
 
 export class Client {
   /**
@@ -32,11 +40,36 @@ export class Client {
   private constructor() {}
 
   /**
-   * 投稿者情報を登録する
+   * 環境の初期設定を行う
    */
-  register() {
+  init() {
     return this.shouldRegister()
       .mergeMap(() => this.prompt())
+  }
+
+  /**
+   * 指定されたファイルの内容を投稿する
+   * @param filepath ファイルパス
+   * @param type     投稿タイプ
+   */
+  post(filepath?: string, type: tumblr.PostParams['type'] = 'text'): Observable<any> {
+    if (isNil(filepath)) {
+      return Observable.throw('filepath is required')
+    }
+
+    const readFileAsObservable = Observable.bindNodeCallback(fs.readFile)
+
+    return readFileAsObservable(path.join(process.cwd(), filepath))
+      .mergeMap(file => {
+        switch (type) {
+          case 'text': {
+            // TODO: parse and render markdown file
+            return api.createTextPost({ body: file.toString() })
+          }
+        }
+
+        return Observable.throw(`${ type } is required!`)
+      })
   }
 
   /**
@@ -45,7 +78,13 @@ export class Client {
   getHelpContent(): string {
     return `
 Usage:
-  tumblr-cli [--version] [--help]
+  tumblr-cli [Command] [file]
+
+
+Command:
+  -i, --init   : Initialize for cli settings.
+  -h, --help   : Show this help.
+  -v, --version: Show cli version.
 `
   }
 

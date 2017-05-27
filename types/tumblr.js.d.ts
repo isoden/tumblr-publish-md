@@ -26,6 +26,32 @@ declare module 'tumblr.js' {
       returnPromises: boolean
     }
 
+    interface PostParams {
+      /** The type of post to create. */
+      type?: 'text' | 'photo' | 'quote' | 'link' | 'chat' | 'audio' | 'video';
+
+      /** The state of the post. */
+      state?: 'published' | 'draft' | 'queue' | 'private';
+
+      /** Comma-separated tags for this post */
+      tags?: string;
+
+      /** Manages the autotweet (if enabled) for this post: set to off for no tweet, or enter text to override the default tweet None No */
+      tweet?: 'off';
+
+      /** The GMT date and time of the post, as a string */
+      date?: string;
+
+      /** Sets the format type of post. */
+      format?: 'html' | 'markdown'
+
+      /** Add a short text summary to the end of the post URL */
+      slug?: string;
+
+      /** Convert any external image URLs to Tumblr image URLs  */
+      native_inline_images?: boolean
+    }
+
     namespace Response {
       interface BlogInfo {
         blog: {
@@ -328,7 +354,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createTextPost(blogIdentifier: string, params: { title?: string; body: string }, callback?: Callback): ApiResponse
+      createTextPost(blogIdentifier: string, params: { title?: string; body: string } & PostParams, callback?: Callback): ApiResponse
 
       /**
        * Creates a photo post on the given blog
@@ -345,7 +371,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createPhotoPost(blogIdentifier: string, params: { source: string; data: string | string[]; data64: string; caption?: string; }, callback?: Callback): ApiResponse
+      createPhotoPost(blogIdentifier: string, params: { source: string; data: string | string[]; data64: string; caption?: string; } & PostParams, callback?: Callback): ApiResponse
 
       /**
        * Creates a quote post on the given blog
@@ -360,7 +386,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createQuotePost(blogIdentifier: string, params: { quote: string; source?: string }, callback?: Callback): ApiResponse
+      createQuotePost(blogIdentifier: string, params: { quote: string; source?: string } & PostParams, callback?: Callback): ApiResponse
 
       /**
        * Creates a link post on the given blog
@@ -381,7 +407,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createLinkPost(blogIdentifier: string, params: { title?: string; url: string; thumbnail?: string; excerpt?: string; author?: string; description?: string }, callback?: Callback): ApiResponse
+      createLinkPost(blogIdentifier: string, params: { title?: string; url: string; thumbnail?: string; excerpt?: string; author?: string; description?: string } & PostParams, callback?: Callback): ApiResponse
 
 
       /**
@@ -399,7 +425,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createChatPost(blogIdentifier: string, params: { title?: string; conversation: string }, callback?: Callback): ApiResponse
+      createChatPost(blogIdentifier: string, params: { title?: string; conversation: string } & PostParams, callback?: Callback): ApiResponse
 
       /**
        * Creates a photo post on the given blog
@@ -417,7 +443,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createAudioPost(blogIdentifier: string, params: { external_url: string; data: any; caption?: string }, callback?: Callback): ApiResponse
+      createAudioPost(blogIdentifier: string, params: { external_url: string; data: any; caption?: string } & PostParams, callback?: Callback): ApiResponse
 
 
       /**
@@ -436,7 +462,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createVideoPost(blogIdentifier: string, params: { embed: string; data: any; caption?: string }, callback: Callback): ApiResponse
+      createVideoPost(blogIdentifier: string, params: { embed: string; data: any; caption?: string } & PostParams, callback: Callback): ApiResponse
 
       /**
        * Sets the client to return Promises instead of Request objects by patching the `getRequest` and
