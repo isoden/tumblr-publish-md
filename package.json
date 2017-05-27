@@ -33,6 +33,7 @@
     "minimist": "^1.2.0",
     "preferences": "^0.2.1",
     "tslib": "^1.7.1",
+    "tumblr.js": "^1.1.1",
     "typescript": "^2.3.3"
   },
   "devDependencies": {
