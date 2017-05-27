@@ -1,6 +1,7 @@
 ### User Settings
 
 lib
+test/**/*.js
 
 ---
 
