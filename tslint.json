@@ -1,7 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/tslint",
   "rules": {
-    "import-blacklist": [true, "rxjs"],
     "class-name": true,
     "comment-format": [
       true,

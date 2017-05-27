@@ -17,13 +17,64 @@ declare module 'tumblr.js' {
       (err: Error | null, req: Request, rawResponse?: string): void
     }
 
-    type ApiResponse<T = { id: string }> = Request | Promise<T>
+    type ApiResponse<T = { id: string }> = Request | Promise<T> | any
 
     interface ConstructOptions {
       credentials: Credentials
       baseUrl: string
       request: RequestLibrary
       returnPromises: boolean
+    }
+
+    namespace Response {
+      interface BlogInfo {
+        blog: {
+          admin: boolean
+          ask: boolean
+          ask_anon: boolean
+          ask_page_title: string
+          can_send_fan_mail: boolean
+          can_submit: boolean
+          can_subscribe: boolean
+          description: string
+          drafts: number
+          facebook: 'N'
+          facebook_opengraph_enabled: 'N'
+          followed: boolean
+          followers: number
+          is_adult: boolean
+          is_blocked_from_primary: boolean
+          is_nsfw: boolean
+          likes: number
+          messages: number
+          name: string
+          posts: number
+          primary: boolean
+          queue: number
+          reply_conditions: string
+          share_likes: boolean
+          submission_page_title: string
+          submission_terms: {
+            accepted_types: Object
+            tags: Array<string>
+            title: string
+            guidelines: string
+          },
+          subscribed: boolean
+          title: string
+          total_posts: number
+          tweet: 'N'
+          twitter_enabled: boolean
+          twitter_send: boolean
+          type: string
+          updated: number
+          url: string
+        }
+      }
+
+      interface BlogAvatar {
+        avatar_url: string
+      }
     }
 
     class Client {
@@ -38,7 +89,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      blogInfo(blogIdentifier: string, params?: Object, callback?: Callback): ApiResponse
+      blogInfo(blogIdentifier: string, params?: Object, callback?: Callback): ApiResponse<Response.BlogInfo>
 
       /**
        * Gets the avatar URL for a blog
@@ -50,7 +101,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      blogAvatar(blogIdentifier: string, size?: number, params?: Object, callback?: Callback): ApiResponse
+      blogAvatar(blogIdentifier: string, size?: number, params?: Object, callback?: Callback): ApiResponse<Response.BlogAvatar>
 
       /**
        * Gets the likes for a blog
