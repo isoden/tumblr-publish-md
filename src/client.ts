@@ -2,15 +2,16 @@
  * @file CLIクライアント
  */
 
-import * as fs from 'fs'
-import * as path from 'path'
-import * as tumblr from 'tumblr.js'
-import * as chalk from 'chalk'
-import * as inquirer from 'inquirer'
-import * as Preferences from 'preferences'
+import * as fs                       from 'fs'
+import * as path                     from 'path'
+import * as chalk                    from 'chalk'
+import * as tumblr                   from 'tumblr.js'
+import * as inquirer                 from 'inquirer'
+import * as minimist                 from 'minimist'
+import * as Preferences              from 'preferences'
 import { isString, isObject, isNil } from 'lodash'
-import { Observable } from 'rxjs/Rx'
-import { ApiClient } from './api-client'
+import { Observable }                from 'rxjs/Rx'
+import { ApiClient }                 from './api-client'
 
 const prefs = new Preferences<{ blogIdentifier: string; credentials: tumblr.Credentials }>('io.github.isoden/tumblr-cli')
 
@@ -45,6 +46,36 @@ export class Client {
   init() {
     return this.shouldRegister()
       .mergeMap(() => this.prompt())
+  }
+
+  /**
+   * コマンドライン引数の値をうけとり処理を実行する
+   * @param args ユーザー入力
+   */
+  exec(args: minimist.ParsedArgs): void {
+    if (args.init) {
+      this.init().subscribe(() => {
+        console.log('Successed!')
+        process.exit()
+      }, err => {
+        console.error(err)
+        process.exit(1)
+      })
+    } else if (args.post) {
+      this.post(args._[1], args.type).subscribe(() => {
+        console.log('Successed!')
+        process.exit()
+      }, err => {
+        console.log(err && err.message || err)
+        process.exit(1)
+      })
+    } else if (args.version) {
+      console.log(this.version)
+      process.exit()
+    } else if (args.help) {
+      console.log(this.getHelpContent())
+      process.exit()
+    }
   }
 
   /**
