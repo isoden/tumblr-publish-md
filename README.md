@@ -36,7 +36,7 @@ $ tumblr-publish-md --init
 ### Post
 
 ```console
-$ tumblr-publish-md --post source/hello-world.md
+$ tumblr-publish-md source/hello-world.md
 ```
 
 ## License

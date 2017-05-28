@@ -9,11 +9,10 @@ import * as tumblr                         from 'tumblr.js'
 import * as inquirer                       from 'inquirer'
 import * as minimist                       from 'minimist'
 import * as Preferences                    from 'preferences'
-import * as yaml                           from 'js-yaml'
-import * as toml                           from 'toml'
 import { isString, isObject, isNil, pick } from 'lodash'
 import { Observable }                      from 'rxjs/Rx'
 import { ApiClient }                       from './api-client'
+import { MdFileParser }                    from './md-file-parser'
 
 const prefs = new Preferences<{ blogIdentifier: string; credentials: tumblr.Credentials }>('io.github.isoden/tumblr-publish-md')
 
@@ -24,14 +23,14 @@ const api = new ApiClient(
 
 export class Client {
   /**
-   * 唯一のインスタンス
+   * シングルトン用のインスタンス
    */
-  static instance = new Client()
+  static readonly instance = new Client()
 
   /**
    * クライアントのバージョン
    */
-  readonly version = 'v0.0.1'
+  readonly version = 'v1.0.0-beta.1'
 
   /**
    * クライアントを返す
@@ -55,20 +54,20 @@ export class Client {
         console.error(err)
         process.exit(1)
       })
-    } else if (args.post) {
-      this.post(args.post, args.type).subscribe(() => {
-        console.log('Successed!')
-        process.exit()
-      }, err => {
-        console.log(err && err.message || err)
-        process.exit(1)
-      })
     } else if (args.version) {
       console.log(this.version)
       process.exit()
     } else if (args.help) {
       console.log(this.getHelpContent())
       process.exit()
+    } else {
+      this.post(args._[0], args.type, args.format).subscribe(() => {
+        console.log('Successed!')
+        process.exit()
+      }, err => {
+        console.log(err && err.message || err)
+        process.exit(1)
+      })
     }
   }
 
@@ -84,8 +83,9 @@ export class Client {
    * 指定されたファイルの内容を投稿する
    * @param filepath ファイルパス
    * @param type     投稿タイプ
+   * @param format   メタ情報の記述フォーマット
    */
-  private post(filepath?: string, type: tumblr.PostParams['type'] = 'text'): Observable<any> {
+  private post(filepath?: string, type: tumblr.PostParams['type'] = 'text', metaFormat?: 'toml' | 'yaml'): Observable<any> {
     if (isNil(filepath)) {
       return Observable.throw('filepath is required')
     }
@@ -96,7 +96,7 @@ export class Client {
       .mergeMap(fileBuffer => {
         switch (type) {
           case 'text': {
-            const { meta, body } = this.splitMetaAndBody(fileBuffer.toString())
+            const { meta, body } = this.parseMarkdownFile(fileBuffer.toString(), metaFormat)
             const params = <{ title?: string; body: string } & tumblr.PostParams>pick({
               ...meta,
               body,
@@ -117,12 +117,11 @@ export class Client {
   private getHelpContent(): string {
     return `
 Usage:
-  tumblr-publish-md [Command] [file]
-
+  tumblr-publish-md [filepath] [options...]
+  tumblr-publish-md [Command]
 
 Command:
   -i, --init   : Initialize for cli settings.
-  -p, --post   : Post new content
   -h, --help   : Show this help.
   -v, --version: Show cli version.
 `
@@ -195,42 +194,11 @@ Command:
   }
 
   /**
-   * 投稿のメタ情報をパースする
-   * @param meta メタ情報の文字列表現
+   * マークダウンの情報をパースする
+   * @param markdown   マークダウンのファイル内容
+   * @param metaFormat メタ情報の記述フォーマット
    */
-  private parseMetaInfo(meta: string): { [key: string]: string } {
-    if (/^\w+\s*:/.test(meta)) {
-      return yaml.safeLoad(meta)
-    } else if (/^\w+\s*=/.test(meta)) {
-      return toml.parse(meta)
-    }
-
-    throw new Error('invalid markdown format')
-  }
-
-  /**
-   * マークダウンのメタ情報と本文を分ける
-   * @param markdown マークダウンのファイル内容
-   */
-  private splitMetaAndBody(markdown: string): { meta: { [key: string]: any }; body: string } {
-    /*! @license https://github.com/bouzuya/jekyll-markdown-parser/blob/master/LICENSE */
-    const separator = new RegExp(/^(?:\+\+\+|---)\s*$\n/m)
-    const metaHead  = markdown.match(separator)
-
-    if (metaHead === null) {
-      return { body: markdown, meta: {} }
-    }
-
-    const s1       = markdown.substring(metaHead.index! + metaHead[0].length)
-    const metaTail = s1.match(separator)
-
-    if (metaTail === null) {
-      return { body: markdown, meta: {} }
-    }
-
-    const meta = this.parseMetaInfo(s1.substring(0, metaTail.index!))
-    const body = s1.substring(metaTail.index! + metaTail[0].length)
-
-    return { meta, body }
+  private parseMarkdownFile(markdown: string, metaFormat?: MdFileParser.MetaFormat): MdFileParser.ParsedData {
+    return MdFileParser.parseMd(markdown, metaFormat)
   }
 }
