@@ -15,7 +15,7 @@ import { isString, isObject, isNil, pick } from 'lodash'
 import { Observable }                      from 'rxjs/Rx'
 import { ApiClient }                       from './api-client'
 
-const prefs = new Preferences<{ blogIdentifier: string; credentials: tumblr.Credentials }>('io.github.isoden/tumblr-cli')
+const prefs = new Preferences<{ blogIdentifier: string; credentials: tumblr.Credentials }>('io.github.isoden/tumblr-publish-md')
 
 const api = new ApiClient(
   prefs.blogIdentifier,
@@ -117,7 +117,7 @@ export class Client {
   private getHelpContent(): string {
     return `
 Usage:
-  tumblr-cli [Command] [file]
+  tumblr-publish-md [Command] [file]
 
 
 Command:

@@ -1,10 +1,10 @@
-tumblr-cli
+tumblr-publish-md
 ===
 
-Tumblr client for CLI
+Publish markdown file to Tumblr
 
-[![npm](https://img.shields.io/npm/v/tumblr-cli.svg?style=flat-square)](https://github.com/isoden/tumblr-cli)
-[![license](https://img.shields.io/github/license/isoden/tumblr-cli.svg?style=flat-square)](https://github.com/isoden/tumblr-cli)
+[![npm](https://img.shields.io/npm/v/tumblr-publish-md.svg?style=flat-square)](https://github.com/isoden/tumblr-publish-md)
+[![license](https://img.shields.io/github/license/isoden/tumblr-publish-md.svg?style=flat-square)](https://github.com/isoden/tumblr-publish-md)
 
 [WIP]
 This Project is under development :hammer_and_wrench:
@@ -12,7 +12,7 @@ This Project is under development :hammer_and_wrench:
 ## Installation
 
 ```console
-$ npm install tumblr-cli --global
+$ npm install tumblr-publish-md --global
 ```
 
 ## Usage
@@ -27,16 +27,16 @@ $ npm install tumblr-cli --global
 
 - https://api.tumblr.com/console/calls/user/info
 
-#### 3. Initialize tumblr-cli
+#### 3. Initialize tumblr-publish-md
 
 ```console
-$ tumblr-cli --init
+$ tumblr-publish-md --init
 ```
 
 ### Post
 
 ```console
-$ tumblr-cli --post source/hello-world.md
+$ tumblr-publish-md --post source/hello-world.md
 ```
 
 ## License
