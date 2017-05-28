@@ -28,28 +28,36 @@ declare module 'tumblr.js' {
 
     interface PostParams {
       /** The type of post to create. */
-      type?: 'text' | 'photo' | 'quote' | 'link' | 'chat' | 'audio' | 'video';
+      type?: 'text' | 'photo' | 'quote' | 'link' | 'chat' | 'audio' | 'video'
 
       /** The state of the post. */
-      state?: 'published' | 'draft' | 'queue' | 'private';
+      state?: 'published' | 'draft' | 'queue' | 'private'
 
       /** Comma-separated tags for this post */
-      tags?: string;
+      tags?: string
 
       /** Manages the autotweet (if enabled) for this post: set to off for no tweet, or enter text to override the default tweet None No */
-      tweet?: 'off';
+      tweet?: 'off'
 
       /** The GMT date and time of the post, as a string */
-      date?: string;
+      date?: string
 
       /** Sets the format type of post. */
       format?: 'html' | 'markdown'
 
       /** Add a short text summary to the end of the post URL */
-      slug?: string;
+      slug?: string
 
       /** Convert any external image URLs to Tumblr image URLs  */
       native_inline_images?: boolean
+    }
+
+    interface CreateTextPostParams extends PostParams {
+      /** post title text */
+      title?: string
+
+      /** post body text */
+      body: string
     }
 
     namespace Response {
@@ -348,13 +356,11 @@ declare module 'tumblr.js' {
        *
        * @param blogIdentifier - blog name or URL
        * @param params         - parameters sent with the request
-       * @param params.title   - post title text
-       * @param params.body    - post body text
        * @param callback       - invoked when the request completes
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      createTextPost(blogIdentifier: string, params: { title?: string; body: string } & PostParams, callback?: Callback): ApiResponse
+      createTextPost(blogIdentifier: string, params: CreateTextPostParams, callback?: Callback): ApiResponse
 
       /**
        * Creates a photo post on the given blog

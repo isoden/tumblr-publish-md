@@ -9,6 +9,7 @@ const args   = minimist(process.argv.slice(2), {
     v: 'version',
     h: 'help',
     i: 'init',
+    p: 'post',
   }
 })
 
