@@ -36,7 +36,32 @@ $ tumblr-publish-md --init
 ### Post
 
 ```console
-$ tumblr-publish-md source/hello-world.md
+$ tumblr-publish-md post source/hello-world.md
+```
+
+### Show List
+
+```console
+$ tumblr-publish-md ls
+415869124166 2017-05-31 published Hello World!
+```
+
+output `post_id post_date post_status post_title`
+
+### Update Post
+
+- [ ] implemented
+
+```console
+$ tumblr-publish-md update source/hello-world.md --id 415869124166
+```
+
+### Delete Post
+
+- [ ] implemented
+
+```console
+$ tumblr-publish-md delete --id 415869124166
 ```
 
 ## License
