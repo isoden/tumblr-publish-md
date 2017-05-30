@@ -2,8 +2,10 @@
  * @file マークダウンの投稿情報をパースする
  */
 
-import * as toml from 'toml'
-import * as yaml from 'js-yaml'
+import * as tumblr from 'tumblr.js'
+import * as toml   from 'toml'
+import * as yaml   from 'js-yaml'
+import { pick }    from 'lodash'
 
 export class MdFileParser {
   static parseMd(markdown: string, format?: MdFileParser.MetaFormat): MdFileParser.ParsedData {
@@ -29,16 +31,32 @@ export class MdFileParser {
   }
 
   static parseMeta(metaData: string, format: MdFileParser.MetaFormat = 'toml'): MdFileParser.MetaData {
+    let parsedMeta: tumblr.CreateTextPostParams
+
     switch (format) {
       case 'toml':
-        return toml.parse(metaData)
+        parsedMeta = toml.parse(metaData)
+        break
 
       case 'yaml':
-        return yaml.safeLoad(metaData)
+        parsedMeta = yaml.safeLoad(metaData)
+        break
 
       default:
         throw new Error(`format is one of the following 'toml' or 'yaml'.`)
     }
+
+    return MdFileParser.normalizeMeta(parsedMeta)
+  }
+
+  private static normalizeMeta(metaData: MdFileParser.MetaData): tumblr.CreateTextPostParams {
+    metaData = pick(metaData, ['title', 'body', 'type', 'state', 'tags', 'tweet', 'date', 'format', 'slug', 'native_inline_images'])
+
+    if (Array.isArray(metaData.tags)) {
+      metaData.tags = metaData.tags.join(',')
+    }
+
+    return <tumblr.CreateTextPostParams>metaData
   }
 }
 

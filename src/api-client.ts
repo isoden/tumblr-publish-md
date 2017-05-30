@@ -109,7 +109,7 @@ export class ApiClient {
     notImplementedYet()
   }
 
-  createTextPost(params: { title?: string; body: string } & tumblr.PostParams): Observable<{ id: string }> {
+  createTextPost(params: tumblr.CreateTextPostParams): Observable<{ id: string }> {
     return Observable.fromPromise(this.client.createTextPost(this.blogIdentifier, params))
   }
 

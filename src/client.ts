@@ -9,7 +9,7 @@ import * as tumblr                         from 'tumblr.js'
 import * as inquirer                       from 'inquirer'
 import * as minimist                       from 'minimist'
 import * as Preferences                    from 'preferences'
-import { isString, isObject, isNil, pick } from 'lodash'
+import { isString, isObject, isNil }       from 'lodash'
 import { Observable }                      from 'rxjs/Rx'
 import { ApiClient }                       from './api-client'
 import { MdFileParser }                    from './md-file-parser'
@@ -65,7 +65,7 @@ export class Client {
         console.log('Successed!')
         process.exit()
       }, err => {
-        console.log(err && err.message || err)
+        console.error(err && err.message || err)
         process.exit(1)
       })
     }
@@ -97,11 +97,11 @@ export class Client {
         switch (type) {
           case 'text': {
             const { meta, body } = this.parseMarkdownFile(fileBuffer.toString(), metaFormat)
-            const params = <{ title?: string; body: string } & tumblr.PostParams>pick({
+            const params: tumblr.CreateTextPostParams = {
+              format: 'markdown',
               ...meta,
               body,
-              format: 'markdown',
-            }, ['title', 'body', 'type', 'state', 'tags', 'tweet', 'date', 'format', 'slug', 'native_inline_images'])
+            }
 
             return api.createTextPost(params)
           }
