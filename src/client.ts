@@ -2,17 +2,18 @@
  * @file CLIクライアント
  */
 
-import * as fs                             from 'fs'
-import * as path                           from 'path'
-import * as chalk                          from 'chalk'
-import * as tumblr                         from 'tumblr.js'
-import * as inquirer                       from 'inquirer'
-import * as minimist                       from 'minimist'
-import * as Preferences                    from 'preferences'
-import { isString, isObject, isNil }       from 'lodash'
-import { Observable }                      from 'rxjs/Rx'
-import { ApiClient }                       from './api-client'
-import { MdFileParser }                    from './md-file-parser'
+import * as fs                               from 'fs'
+import * as path                             from 'path'
+import * as chalk                            from 'chalk'
+import * as tumblr                           from 'tumblr.js'
+import * as inquirer                         from 'inquirer'
+import * as minimist                         from 'minimist'
+import * as Preferences                      from 'preferences'
+import * as dateFns                          from 'date-fns'
+import { isString, isObject, isNil, padEnd } from 'lodash'
+import { Observable }                        from 'rxjs/Rx'
+import { ApiClient }                         from './api-client'
+import { MdFileParser }                      from './md-file-parser'
 
 const prefs = new Preferences<{ blogIdentifier: string; credentials: tumblr.Credentials }>('io.github.isoden/tumblr-publish-md')
 
@@ -30,7 +31,7 @@ export class Client {
   /**
    * クライアントのバージョン
    */
-  readonly version = 'v1.0.0-beta.1'
+  readonly version = 'v1.0.0-beta.2'
 
   /**
    * クライアントを返す
@@ -47,7 +48,7 @@ export class Client {
    */
   exec(args: minimist.ParsedArgs): void {
     if (args.init) {
-      this.init().subscribe(() => {
+      return void this.init().subscribe(() => {
         console.log('Successed!')
         process.exit()
       }, err => {
@@ -56,18 +57,33 @@ export class Client {
       })
     } else if (args.version) {
       console.log(this.version)
-      process.exit()
+      return process.exit()
     } else if (args.help) {
       console.log(this.getHelpContent())
-      process.exit()
-    } else {
-      this.post(args._[0], args.type, args.format).subscribe(() => {
-        console.log('Successed!')
-        process.exit()
-      }, err => {
-        console.error(err && err.message || err)
-        process.exit(1)
-      })
+      return process.exit()
+    }
+
+    switch (args._[0]) {
+      case 'post': {
+        return void this.post(args._[0], args.type, args.format).subscribe(() => {
+          console.log('Successed!')
+          process.exit()
+        }, err => {
+          console.error(err && err.message || err)
+          process.exit(1)
+        })
+      }
+
+      case 'ls': {
+        return void api.blogPosts(args.type, {
+          offset: args.offset
+        }).subscribe(res => {
+          res.posts.map(({ id, state, title, date }) => {
+            // tslint:disable-next-line:max-line-length
+            console.log(`${ chalk.blue(id + '') } ${ chalk.white(dateFns.format(date, 'YYYY-MM-DD')) } ${ chalk.green(padEnd(state, 9)) } ${ chalk.white(title + '') }`)
+          })
+        })
+      }
     }
   }
 

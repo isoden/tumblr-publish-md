@@ -41,8 +41,8 @@ export class ApiClient {
     notImplementedYet()
   }
 
-  blogPosts() {
-    notImplementedYet()
+  blogPosts(type?: string, params?: Object): Observable<tumblr.Response.BlogPosts> {
+    return Observable.fromPromise(this.client.blogPosts(this.blogIdentifier, type, params))
   }
 
   blogQueue() {

@@ -61,6 +61,12 @@ declare module 'tumblr.js' {
     }
 
     namespace Response {
+      /** Type of post */
+      type PostType = 'text' | 'quote' | 'link' | 'answer' | 'video' | 'audio' | 'photo' | 'chat'
+
+      /** Status of post */
+      type PostState = 'published' | 'queued' | 'draft' | 'private'
+      
       interface BlogInfo {
         blog: {
           admin: boolean
@@ -108,6 +114,28 @@ declare module 'tumblr.js' {
 
       interface BlogAvatar {
         avatar_url: string
+      }
+
+      interface BlogPosts {
+        blog: {}
+        posts: {
+          blog_name: string
+          id: number
+          post_url: string
+          type?: PostType
+          timestamp: number
+          date: string
+          format: 'html' | 'markdown'
+          reblog_key: string
+          tags: string[]
+          bookmarklet: boolean
+          mobile: boolean
+          source_url: string
+          title: string
+          liked: boolean
+          state: PostState
+          total_posts: number
+        }[]
       }
     }
 
