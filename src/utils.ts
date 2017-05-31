@@ -3,8 +3,10 @@
  */
 
 import * as tumblr from 'tumblr.js'
+import * as inquirer from 'inquirer'
 import { parse }   from 'jekyll-markdown-parser'
 import { pick }    from 'lodash'
+import { Observable } from 'rxjs/Observable'
 
 export interface PostMeta {
   [key: string]: any
@@ -28,4 +30,17 @@ export function normalizeYamlMeta(meta: PostMeta) {
   }
 
   return <tumblr.CreateTextPostParams>pickedMeta
+}
+
+export function confirm(message: string): Observable<boolean> {
+  return Observable.fromPromise(
+    inquirer.prompt([
+      {
+        message,
+        name: 'confirm',
+        type: 'confirm',
+      }
+    ])
+  )
+  .map(answers => answers.confirm)
 }

@@ -52,10 +52,8 @@ $ tumblr-publish-md update --file source/hello-world.md --id 415869124166
 
 ### Delete Post
 
-- [ ] implemented
-
 ```console
-$ tumblr-publish-md delete --id 415869124166
+$ tumblr-publish-md rm --id 415869124166
 ```
 
 ## License

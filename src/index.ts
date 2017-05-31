@@ -12,8 +12,11 @@ import { EventEmitter2 }    from 'eventemitter2'
 import { Observable }       from 'rxjs/Observable'
 import { isString, padEnd } from 'lodash'
 
-import { parseMarkdown } from './utils'
 import { ApiClient }     from './api-client'
+import {
+  parseMarkdown,
+  confirm,
+} from './utils'
 
 interface Config {
   blogIdentifier: string
@@ -115,7 +118,7 @@ const cli = meow(`
     $ tumblr-publish-md update --file source/hello-world.md --id 415869124166
 
   ### Delete
-    $ tumblr-publish-md delete --id 415869124166
+    $ tumblr-publish-md rm --id 415869124166
 `, {
   alias: {
     v: 'version',
@@ -168,19 +171,12 @@ main
         const { posts } = res
 
         // 更新に同意するか尋ねる
-        return Observable.fromPromise(inquirer.prompt([
-          {
-            name   : 'confirm',
-            message: `Are you sure you want to update '${ posts[0].title }'`,
-            type   : 'confirm'
-          }
-        ]))
-        .map(answer => answer.confirm)
-        .do(confirmed => {
-          if (!confirmed) {
-            throw new Error('You should agree to update')
-          }
-        })
+        return confirm(`Are you sure you want to update '${ posts[0].title }'`)
+          .do(confirmed => {
+            if (!confirmed) {
+              throw new Error('You should agree to update')
+            }
+          })
       })
       .mergeMap(() => {
         // 更新に同意したときのみ更新APIを実行する
@@ -192,6 +188,32 @@ main
         })
       })
       .do(() => console.log(chalk.green('Update successed!')))
+      .toPromise()
+  })
+
+  // 投稿削除
+  .on('rm', (apiClient, options) => {
+    const { id } = options
+
+    // ID と一致する投稿があるかチェック
+    return apiClient.blogPosts(void 0, { id })
+      .catch(() => Observable.throw(new Error('No Post found')))
+      .mergeMap((res: tumblr.Response.BlogPosts) => {
+        const { posts } = res
+
+        // 削除に同意するか尋ねる
+        return confirm(`Are you sure want to delete '${ posts[0].title }'`)
+          .do(confirmed => {
+            if (!confirmed) {
+              throw new Error('You should agree to update')
+            }
+          })
+      })
+      .mergeMap(() => {
+        // 削除に同意したときのみ削除APIを実行する
+        return apiClient.deletePost({ id })
+      })
+      .do(() => console.log(chalk.green('Delete successed!')))
       .toPromise()
   })
 

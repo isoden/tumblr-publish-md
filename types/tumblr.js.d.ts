@@ -334,7 +334,7 @@ declare module 'tumblr.js' {
        *
        * @return Request object, or Promise if {@link returnPromises} was used
        */
-      deletePost(blogIdentifier: string, params: { id: string }, callback?: Callback): ApiResponse
+      deletePost(blogIdentifier: string, params: { id: number }, callback?: Callback): ApiResponse
 
       /**
        * Follows a blog as the authenticating user

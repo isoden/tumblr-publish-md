@@ -3,7 +3,7 @@
   "bin": {
     "tumblr-publish-md": "lib/index.js"
   },
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Publish markdown file to Tumblr",
   "main": "lib/index.js",
   "scripts": {
