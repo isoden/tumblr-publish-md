@@ -138,6 +138,7 @@ main
       ...meta,
       ...params,
       body,
+      format: 'markdown',
     })
     .do(() => console.log(chalk.green('Post successed!')))
     .toPromise()
@@ -186,6 +187,7 @@ main
           ...params,
           id,
           body,
+          format: 'markdown',
         })
       })
       .do(() => console.log(chalk.green('Update successed!')))
