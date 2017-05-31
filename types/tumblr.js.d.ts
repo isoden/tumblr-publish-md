@@ -60,6 +60,11 @@ declare module 'tumblr.js' {
       body: string
     }
 
+    interface EditPostParams extends PostParams {
+      /** The ID of the post to edit */
+      id: number
+    }
+
     namespace Response {
       /** Type of post */
       type PostType = 'text' | 'quote' | 'link' | 'answer' | 'video' | 'audio' | 'photo' | 'chat'

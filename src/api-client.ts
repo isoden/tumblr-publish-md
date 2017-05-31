@@ -81,8 +81,8 @@ export class ApiClient {
     notImplementedYet()
   }
 
-  editPost() {
-    notImplementedYet()
+  editPost(params: tumblr.EditPostParam) {
+    return Observable.fromPromise(this.client.editPost(this.blogIdentifier, params))
   }
 
   reblogPost() {

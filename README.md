@@ -27,33 +27,27 @@ $ npm install tumblr-publish-md --global
 
 - https://api.tumblr.com/console/calls/user/info
 
-#### 3. Initialize tumblr-publish-md
-
-```console
-$ tumblr-publish-md --init
-```
-
 ### Post
 
 ```console
-$ tumblr-publish-md post source/hello-world.md
+$ tumblr-publish-md post --file source/hello-world.md
 ```
 
-### Show List
+### Show Published Posts
 
 ```console
-$ tumblr-publish-md ls
-415869124166 2017-05-31 published Hello World!
+$ tumblr-publish-md ls-remote
+415869124166 2017-05-31 Hello World! Ep.3
+340829163716 2017-05-30 Hello World! Ep.2
+256314326581 2017-05-29 Hello World! Ep.1
 ```
 
-output `post_id post_date post_status post_title`
+output `post_id post_date post_title`
 
 ### Update Post
 
-- [ ] implemented
-
 ```console
-$ tumblr-publish-md update source/hello-world.md --id 415869124166
+$ tumblr-publish-md update --file source/hello-world.md --id 415869124166
 ```
 
 ### Delete Post
