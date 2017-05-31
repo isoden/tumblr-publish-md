@@ -45,6 +45,12 @@ export class ApiClient {
     return Observable.fromPromise(this.client.blogPosts(this.blogIdentifier, type, params))
   }
 
+  blogPost(type?: string, params?: Object): Observable<tumblr.Response.Post | void> {
+    return this.blogPosts(type, params)
+      .map(res => res.posts[0])
+      .catch(() => Observable.of(void 0))
+  }
+
   blogQueue() {
     notImplementedYet()
   }

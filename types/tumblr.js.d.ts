@@ -121,26 +121,30 @@ declare module 'tumblr.js' {
         avatar_url: string
       }
 
+      type Posts = Post[]
+
+      interface Post {
+        blog_name: string
+        id: number
+        post_url: string
+        type?: PostType
+        timestamp: number
+        date: string
+        format: 'html' | 'markdown'
+        reblog_key: string
+        tags: string[]
+        bookmarklet: boolean
+        mobile: boolean
+        source_url: string
+        title: string
+        liked: boolean
+        state: PostState
+        total_posts: number
+      }
+
       interface BlogPosts {
         blog: {}
-        posts: {
-          blog_name: string
-          id: number
-          post_url: string
-          type?: PostType
-          timestamp: number
-          date: string
-          format: 'html' | 'markdown'
-          reblog_key: string
-          tags: string[]
-          bookmarklet: boolean
-          mobile: boolean
-          source_url: string
-          title: string
-          liked: boolean
-          state: PostState
-          total_posts: number
-        }[]
+        posts: Posts
       }
     }
 

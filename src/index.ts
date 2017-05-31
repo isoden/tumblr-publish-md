@@ -165,13 +165,14 @@ main
     const { body, meta } = parseMarkdown(markdown)
 
     // ID と一致する投稿があるかチェック
-    return apiClient.blogPosts(void 0, { id })
-      .catch(() => Observable.throw(new Error('No Post found')))
-      .mergeMap((res: tumblr.Response.BlogPosts) => {
-        const { posts } = res
+    return apiClient.blogPost(void 0, { id })
+      .mergeMap(post => {
+        if (!post) {
+          return Observable.throw(new Error('No Post found'))
+        }
 
         // 更新に同意するか尋ねる
-        return confirm(`Are you sure you want to update '${ posts[0].title }'`)
+        return confirm(`Are you sure you want to update '${ post.title }'`)
           .do(confirmed => {
             if (!confirmed) {
               throw new Error('You should agree to update')
@@ -196,13 +197,14 @@ main
     const { id } = options
 
     // ID と一致する投稿があるかチェック
-    return apiClient.blogPosts(void 0, { id })
-      .catch(() => Observable.throw(new Error('No Post found')))
-      .mergeMap((res: tumblr.Response.BlogPosts) => {
-        const { posts } = res
+    return apiClient.blogPost(void 0, { id })
+      .mergeMap(post => {
+        if (!post) {
+          return Observable.throw(new Error('No Post found'))
+        }
 
         // 削除に同意するか尋ねる
-        return confirm(`Are you sure want to delete '${ posts[0].title }'`)
+        return confirm(`Are you sure want to delete '${ post.title }'`)
           .do(confirmed => {
             if (!confirmed) {
               throw new Error('You should agree to update')
@@ -221,6 +223,7 @@ Observable.fromPromise(main.emitAsync(cli.input[0], cli.flags))
   .finally(() => main.dispose())
   .subscribe({
     error(err) {
-      console.error(err && err.message || err)
+      process.stderr.write(chalk.red(err && err.message || err))
+      process.exit(1)
     }
   })
